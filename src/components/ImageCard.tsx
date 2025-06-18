@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { Image } from '../types';
 
 type ImageCardProps = {
@@ -6,15 +6,25 @@ type ImageCardProps = {
 };
 
 const ImageCard: React.FC<ImageCardProps> = ({ image }) => {
-    const [liked, setLiked] = useState<boolean>(
-        JSON.parse(localStorage.getItem(`likedImages`) || '{}')[image.id] || false
-    );
+    // Инициализируем состояние из localStorage
+    const getInitialLikeState = (): boolean => {
+        const saved = localStorage.getItem('likedImages');
+        if (!saved) return false;
+        const likes = JSON.parse(saved);
+        return !!likes[image.id];
+    };
+
+    const [liked, setLiked] = useState<boolean>(getInitialLikeState);
+
+    // Синхронизируем состояние с localStorage
+    useEffect(() => {
+        const likes = JSON.parse(localStorage.getItem('likedImages') || '{}');
+        likes[image.id] = liked;
+        localStorage.setItem('likedImages', JSON.stringify(likes));
+    }, [liked, image.id]);
 
     const toggleLike = () => {
-        const likes = JSON.parse(localStorage.getItem('likedImages') || '{}');
-        likes[image.id] = !liked;
-        localStorage.setItem('likedImages', JSON.stringify(likes));
-        setLiked(!liked);
+        setLiked((prev) => !prev);
     };
 
     return (
@@ -27,6 +37,8 @@ const ImageCard: React.FC<ImageCardProps> = ({ image }) => {
             <button
                 onClick={toggleLike}
                 className={`absolute top-2 right-2 text-xl ${liked ? 'text-red-500' : 'text-white'} bg-black bg-opacity-50 rounded-full p-1`}
+                type="button"
+                aria-label={liked ? 'Unlike' : 'Like'}
             >
                 ❤️
             </button>
