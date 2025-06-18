@@ -42,7 +42,7 @@ const ImageCard: React.FC<ImageCardProps> = ({ image }) => {
         src={image.urls.small}
         alt={image.alt_description || 'Фотография'}
         className="w-full h-auto rounded-md transition-transform duration-300 transform group-hover:scale-105"
-        onClick={() => setLightboxOpen(true)} // открываем модалку
+        onClick={() => setLightboxOpen(true)}
       />
       <button
         onClick={(e) => {
@@ -55,7 +55,20 @@ const ImageCard: React.FC<ImageCardProps> = ({ image }) => {
       >
         ❤️
       </button>
-
+  
+      {/* Отдельная кнопка удаления */}
+      {liked && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleLike(); // повторный клик удаляет
+          }}
+          className="absolute bottom-2 right-2 text-sm bg-gray-800 text-white px-2 py-1 rounded opacity-80 hover:opacity-100"
+        >
+          Удалить
+        </button>
+      )}
+  
       {/* Рендерим только если lightboxOpen = true */}
       {lightboxOpen && (
         <Lightbox

@@ -1,7 +1,7 @@
-// src/App.tsx
-import React, { useState } from 'react';
-import SearchBar from './components/SearchBar';
+import { useState } from 'react';
+import BackToTopButton from './components/BackToTopButton';
 import ImageGallery from './components/ImageGallery';
+import SearchBar from './components/SearchBar';
 
 function App() {
   const [searchQuery, setSearchQuery] = useState<string>('nature');
@@ -18,6 +18,7 @@ function App() {
       </header>
       <SearchBar onSearch={setSearchQuery} />
       <ImageGallery searchQuery={searchQuery} />
+      <BackToTopButton />
     </div>
   );
 }

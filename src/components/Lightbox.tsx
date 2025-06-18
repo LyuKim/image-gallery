@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 
 type LightboxProps = {
-  imageUrl: string | null;
+  imageUrl: string;
   alt: string;
   onClose: () => void;
 };
 
 const Lightbox: React.FC<LightboxProps> = ({ imageUrl, alt, onClose }) => {
+  // Закрытие по Esc
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -15,17 +16,15 @@ const Lightbox: React.FC<LightboxProps> = ({ imageUrl, alt, onClose }) => {
     return () => window.removeEventListener('keydown', handleEscape);
   }, [onClose]);
 
-  if (!imageUrl) return null;
-
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 animate-fadeIn"
       onClick={onClose}
     >
       <img
         src={imageUrl}
         alt={alt}
-        className="max-w-full max-h-screen object-contain"
+        className="max-w-[90vw] max-h-[90vh] object-contain transition-transform transform hover:scale-105 duration-300"
         onClick={(e) => e.stopPropagation()}
       />
     </div>
@@ -33,3 +32,5 @@ const Lightbox: React.FC<LightboxProps> = ({ imageUrl, alt, onClose }) => {
 };
 
 export default Lightbox;
+
+

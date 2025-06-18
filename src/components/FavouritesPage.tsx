@@ -1,6 +1,7 @@
-// src/components/FavouritesPage.tsx
 import React, { useEffect, useState } from 'react';
 import ImageCard from './ImageCard';
+import BackToTopButton from './BackToTopButton';
+import { Link } from 'react-router-dom';
 import type { Image } from '../types';
 
 const FavouritesPage: React.FC = () => {
@@ -15,7 +16,16 @@ const FavouritesPage: React.FC = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">Избранное</h1>
+      <header className="mb-6 flex items-center">
+        <Link
+          to="/"
+          className="mr-4 text-blue-500 hover:underline flex items-center"
+        >
+          ← Назад
+        </Link>
+        <h1 className="text-3xl font-bold">Избранное</h1>
+      </header>
+
       {favourites.length === 0 ? (
         <p>У вас пока нет избранных изображений.</p>
       ) : (
@@ -25,6 +35,8 @@ const FavouritesPage: React.FC = () => {
           ))}
         </div>
       )}
+
+      <BackToTopButton />
     </div>
   );
 };
