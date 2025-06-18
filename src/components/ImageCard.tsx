@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Lightbox from './Lightbox';
-import type{ Image } from '../types';
+import type { Image } from '../types';
 
 type ImageCardProps = {
   image: Image;
@@ -14,9 +14,16 @@ const ImageCard: React.FC<ImageCardProps> = ({ image }) => {
   useEffect(() => {
     const saved = localStorage.getItem('favouriteImages');
     if (saved) {
-      const favourites = JSON.parse(saved);
-      const isLiked = favourites.some((fav: Image) => fav.id === image.id);
-      setLiked(isLiked);
+      try {
+        const favourites = JSON.parse(saved);
+        if (Array.isArray(favourites)) {
+          const isLiked = favourites.some((fav: Image) => fav.id === image.id);
+          setLiked(isLiked);
+        }
+      } catch (e) {
+        console.error('Ошибка парсинга избранного:', e);
+        localStorage.removeItem('favouriteImages');
+      }
     }
   }, [image.id]);
 
@@ -49,7 +56,7 @@ const ImageCard: React.FC<ImageCardProps> = ({ image }) => {
           e.stopPropagation();
           toggleLike();
         }}
-        className={`absolute top-2 right-2 text-xl ${liked ? 'text-red-500' : 'text-transparent border border-black'} bg-transparent hover:text-white hover:border-white hover:bg-black hover:bg-opacity-20 rounded-full p-1 transition-all duration-200 ease-in-out cursor-pointer`}
+        className={`absolute top-2 right-2 text-xl ${liked ? 'text-red-500' : 'text-black/40'} bg-transparent hover:text-black/80 rounded-full p-1 transition-all duration-200 ease-in-out cursor-pointer`}
         type="button"
         aria-label={liked ? 'Unlike' : 'Like'}
       >
