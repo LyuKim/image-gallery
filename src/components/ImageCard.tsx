@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Lightbox from './Lightbox';
-import type { Image } from '../types';
+import type{ Image } from '../types';
 
 type ImageCardProps = {
   image: Image;
@@ -49,26 +49,13 @@ const ImageCard: React.FC<ImageCardProps> = ({ image }) => {
           e.stopPropagation();
           toggleLike();
         }}
-        className={`absolute top-2 right-2 text-xl ${liked ? 'text-red-500' : 'text-white'} bg-black bg-opacity-50 rounded-full p-1`}
+        className={`absolute top-2 right-2 text-xl ${liked ? 'text-red-500' : 'text-transparent border border-black'} bg-transparent hover:text-white hover:border-white hover:bg-black hover:bg-opacity-20 rounded-full p-1 transition-all duration-200 ease-in-out cursor-pointer`}
         type="button"
         aria-label={liked ? 'Unlike' : 'Like'}
       >
         ❤️
       </button>
-  
-      {/* Отдельная кнопка удаления */}
-      {liked && (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleLike(); // повторный клик удаляет
-          }}
-          className="absolute bottom-2 right-2 text-sm bg-gray-800 text-white px-2 py-1 rounded opacity-80 hover:opacity-100"
-        >
-          Удалить
-        </button>
-      )}
-  
+
       {/* Рендерим только если lightboxOpen = true */}
       {lightboxOpen && (
         <Lightbox
