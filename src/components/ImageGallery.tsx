@@ -1,4 +1,3 @@
-// src/components/ImageGallery.tsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ImageCard from './ImageCard';
@@ -14,12 +13,14 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ searchQuery }) => {
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
 
+  // При смене поискового запроса — обнуляем всё
   useEffect(() => {
     setPage(1);
     setImages([]);
     setHasMore(true);
   }, [searchQuery]);
 
+  // Подгружаем новые изображения при изменении page или searchQuery
   useEffect(() => {
     if (!searchQuery || page === 1) return;
 
@@ -29,8 +30,14 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ searchQuery }) => {
         const response = await axios.get(
           `https://api.unsplash.com/search/photos?query=${searchQuery}&page=${page}&client_id=${import.meta.env.VITE_UNSPLASH_ACCESS_KEY}`
         );
-        if (response.data.results.length === 0) setHasMore(false);
-        setImages((prev) => [...prev, ...response.data.results]);
+
+        // Убираем дубликаты по id
+        const newImages = response.data.results.filter(
+          (newImg: Image) => !images.some((img) => img.id === newImg.id)
+        );
+
+        if (newImages.length === 0) setHasMore(false);
+        setImages((prev) => [...prev, ...newImages]);
       } catch (error) {
         console.error('Ошибка:', error);
         setHasMore(false);
