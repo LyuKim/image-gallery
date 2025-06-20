@@ -52,20 +52,21 @@ const ImageCard: React.FC<ImageCardProps> = ({ image }) => {
         onClick={() => setLightboxOpen(true)}
       />
       <button
-        onClick={(e) => {
-          e.stopPropagation();
-          toggleLike();
-        }}
-        className={`absolute top-2 right-2 text-xl ${
-          liked ? 'text-red-500' : 'text-red-500/30'
-        } bg-transparent hover:text-red-500/80 rounded-full p-1 transition-all duration-200 ease-in-out cursor-pointer`}
-        type="button"
-        aria-label={liked ? 'Unlike' : 'Like'}
-      >
-        <span className="inline-block">❤️</span>
-      </button>
+  onClick={(e) => {
+    e.stopPropagation();
+    toggleLike();
+  }}
+  className={`absolute top-2 right-2 flex items-center justify-center ${
+    liked ? 'text-red-500' : 'text-black'
+  } transition-colors duration-200 ease-in-out cursor-pointer`}
+  type="button"
+  aria-label={liked ? 'Unlike' : 'Like'}
+>
+  <span className="material-symbols-outlined align-middle text-xl">
+    favorite
+  </span>
+</button>
 
-      {/* Рендерим только если lightboxOpen = true */}
       {lightboxOpen && (
         <Lightbox
           imageUrl={image.urls.regular}
