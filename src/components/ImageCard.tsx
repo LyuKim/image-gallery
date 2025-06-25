@@ -1,37 +1,81 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Lightbox from './Lightbox';
 import type { Image } from '../types';
 
 type ImageCardProps = {
-    image: Image;
+  image: Image;
 };
 
 const ImageCard: React.FC<ImageCardProps> = ({ image }) => {
-    const [liked, setLiked] = useState<boolean>(
-        JSON.parse(localStorage.getItem(`likedImages`) || '{}')[image.id] || false
-    );
+  const [liked, setLiked] = useState<boolean>(false);
+  const [lightboxOpen, setLightboxOpen] = useState<boolean>(false);
 
-    const toggleLike = () => {
-        const likes = JSON.parse(localStorage.getItem('likedImages') || '{}');
-        likes[image.id] = !liked;
-        localStorage.setItem('likedImages', JSON.stringify(likes));
-        setLiked(!liked);
-    };
+  // Инициализируем состояние из localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('favouriteImages');
+    if (saved) {
+      try {
+        const favourites = JSON.parse(saved);
+        if (Array.isArray(favourites)) {
+          const isLiked = favourites.some((fav: Image) => fav.id === image.id);
+          setLiked(isLiked);
+        }
+      } catch (e) {
+        console.error('Ошибка парсинга избранного:', e);
+        localStorage.removeItem('favouriteImages');
+      }
+    }
+  }, [image.id]);
 
-    return (
-        <div className="relative group">
-            <img
-                src={image.urls.small}
-                alt={image.alt_description || 'Фотография'}
-                className="w-full h-auto rounded-md transition-transform duration-300 transform group-hover:scale-105"
-            />
-            <button
-                onClick={toggleLike}
-                className={`absolute top-2 right-2 text-xl ${liked ? 'text-red-500' : 'text-white'} bg-black bg-opacity-50 rounded-full p-1`}
-            >
-                ❤️
-            </button>
-        </div>
-    );
+  const toggleLike = () => {
+    const saved = localStorage.getItem('favouriteImages');
+    let favourites: Image[] = saved ? JSON.parse(saved) : [];
+
+    if (liked) {
+      // Удалить из избранного
+      favourites = favourites.filter((fav: Image) => fav.id !== image.id);
+    } else {
+      // Добавить в избранное
+      favourites.push(image);
+    }
+
+    localStorage.setItem('favouriteImages', JSON.stringify(favourites));
+    setLiked(!liked);
+  };
+
+  return (
+    <div className="relative group cursor-pointer">
+      <img
+        src={image.urls.small}
+        alt={image.alt_description || 'Фотография'}
+        className="w-full h-auto rounded-md transition-transform duration-300 transform group-hover:scale-105"
+        onClick={() => setLightboxOpen(true)}
+      />
+      <button
+  onClick={(e) => {
+    e.stopPropagation();
+    toggleLike();
+  }}
+  className={`absolute top-2 right-2 flex items-center justify-center ${
+    liked ? 'text-red-500' : 'text-black'
+  } transition-colors duration-200 ease-in-out cursor-pointer`}
+  type="button"
+  aria-label={liked ? 'Unlike' : 'Like'}
+>
+  <span className="material-symbols-outlined align-middle text-xl">
+    favorite
+  </span>
+</button>
+
+      {lightboxOpen && (
+        <Lightbox
+          imageUrl={image.urls.regular}
+          alt={image.alt_description || 'Фотография'}
+          onClose={() => setLightboxOpen(false)}
+        />
+      )}
+    </div>
+  );
 };
 
 export default ImageCard;
