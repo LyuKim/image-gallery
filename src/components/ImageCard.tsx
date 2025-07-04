@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Lightbox from './Lightbox';
 import type { Image } from '../types';
 
+
 type ImageCardProps = {
   image: Image;
 };

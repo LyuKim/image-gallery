@@ -5,6 +5,7 @@ const BackToTopButton: React.FC = () => {
 
     useEffect(() => {
         const toggleVisibility = () => {
+            // Используем scrollY вместо pageYOffset
             if (window.scrollY > 300) {
                 setIsVisible(true);
             } else {
