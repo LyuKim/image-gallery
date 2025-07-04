@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Lightbox from './Lightbox';
 import type { Image } from '../types';
 
-
 type ImageCardProps = {
   image: Image;
 };
@@ -52,22 +51,27 @@ const ImageCard: React.FC<ImageCardProps> = ({ image }) => {
         className="w-full h-auto rounded-md transition-transform duration-300 transform group-hover:scale-105"
         onClick={() => setLightboxOpen(true)}
       />
-      <button
-  onClick={(e) => {
-    e.stopPropagation();
-    toggleLike();
-  }}
-  className={`absolute top-2 right-2 flex items-center justify-center ${
-    liked ? 'text-red-500' : 'text-black'
-  } transition-colors duration-200 ease-in-out cursor-pointer`}
-  type="button"
-  aria-label={liked ? 'Unlike' : 'Like'}
->
-  <span className="material-symbols-outlined align-middle text-xl">
-    favorite
-  </span>
-</button>
-
+  
+      {/* Показываем кнопку только если пользователь залогинен */}
+      {localStorage.getItem('username') && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleLike();
+          }}
+          className={`absolute top-2 right-2 flex items-center justify-center ${
+            liked ? 'text-red-500' : 'text-black'
+          } transition-colors duration-200 ease-in-out cursor-pointer`}
+          type="button"
+          aria-label={liked ? 'Unlike' : 'Like'}
+        >
+          <span className="material-symbols-outlined align-middle text-xl">
+            favorite
+          </span>
+        </button>
+      )}
+  
+      {/* Lightbox */}
       {lightboxOpen && (
         <Lightbox
           imageUrl={image.urls.regular}
